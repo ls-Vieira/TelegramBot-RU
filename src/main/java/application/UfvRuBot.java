@@ -63,12 +63,12 @@ public class UfvRuBot extends TelegramLongPollingBot {
 
 	@Override
 	public String getBotUsername() {
-		return "UfvRu_bot";
+		return null;
 	}
 
 	@Override
 	public String getBotToken() {
-		return "5592836162:AAF0d8Lnsv97Tc2e4pzumeGSzLqEMwT1uYM";
+		return null;
 	}
 
 }
