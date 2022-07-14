@@ -23,20 +23,21 @@ public class UfvRuBot extends TelegramLongPollingBot {
 		
 		String command = update.getMessage().getText();
 
-		String message = generateMessage(command);
-
-		SendMessage response = new SendMessage();
-		response.setChatId(update.getMessage().getChatId().toString());
-		response.setText(message);
-
-		try {
-			execute(response);
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
-		}
-
+		sendMessage(update.getMessage().getChatId().toString(),command);
+		
 	}
 
+	@Override
+	public String getBotUsername() {
+		return null;
+	}
+
+	@Override
+	public String getBotToken() {
+		return null;
+	}
+	
+	
 	private String generateMessage(String command) {
 		String message;
 
@@ -60,15 +61,19 @@ public class UfvRuBot extends TelegramLongPollingBot {
 
 		return message;
 	}
+	
+	private void sendMessage(String idChat, String command) {
+		String message = generateMessage(command);
 
-	@Override
-	public String getBotUsername() {
-		return null;
+		SendMessage response = new SendMessage();
+		response.setChatId(idChat);
+		response.setText(message);
+
+		try {
+			execute(response);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
 	}
-
-	@Override
-	public String getBotToken() {
-		return null;
-	}
-
+	
 }
