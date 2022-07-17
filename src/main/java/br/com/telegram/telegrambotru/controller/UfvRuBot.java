@@ -1,4 +1,4 @@
-package application;
+package br.com.telegram.telegrambotru.controller;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -42,21 +42,21 @@ public class UfvRuBot extends TelegramLongPollingBot {
 		String message;
 
 		if (command.equals("/start")) {
-			message = "Oi, me chamo UfvRuBot e sou um Bot dos RefeitÛrios Universit·rios da UFV! \uD83E\uDD16 \n\n"
-					+ "Estou aqui para te dar suporte com alguns dos nossos principais serviÁos \n\n"
+			message = "Oi, me chamo UfvRuBot e sou um Bot dos Refeit√≥rios Universit√°rios da UFV! \uD83E\uDD16 \n\n"
+					+ "Estou aqui para te dar suporte com alguns dos nossos principais servi√ßos \n\n"
 					+ "Por favor, digite um comando presente na aba 'Menu' para que eu possa te ajudar.\n";
 
 		} else if (command.equals("/cardapio")) {
-			message = "Esta operaÁ„o ainda n„o est· disponÌvel";
+			message = "Esta opera√ß√£o ainda n√£o est√° dispon√≠vel";
 
 		} else if (command.equals("/alterarpref")) {
-			message = "Esta operaÁ„o ainda n„o est· disponÌvel";
+			message = "Esta opera√ß√£o ainda n√£o est√° dispon√≠vel";
 
 		} else if (command.equals("/desligar")) {
-			message = "Esta operaÁ„o ainda n„o est· disponÌvel";
+			message = "Esta opera√ß√£o ainda n√£o est√° dispon√≠vel";
 
 		} else {
-			message = "AÁ„o inv·lida! Por favor digite um comando presente na aba 'Menu' ao lado de seu chat";
+			message = "A√ß√£o inv√°lida! Por favor digite um comando presente na aba 'Menu' ao lado de seu chat";
 		}
 
 		return message;
