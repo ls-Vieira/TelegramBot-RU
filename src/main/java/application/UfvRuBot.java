@@ -5,25 +5,47 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import entities.Frases;
+
 public class UfvRuBot extends TelegramLongPollingBot {
+	
+	private Frases fr = new Frases();
+	private boolean isAlterPref;
+	private boolean isDesligar;
+	
+	public UfvRuBot() {
+		super();
+		isAlterPref = false;
+		isDesligar = false;
+	}
 
 	@Override
 	public void onUpdateReceived(Update update) {
 		
-		/* Dados do bot (import/java.util.Date e /java.text.SimpleDateFormat
-		 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-			Date msgDate = new Date(update.getMessage().getDate().longValue()*1000); //to milliseconds
-			System.out.println("------------DADOS-------------");
-			System.out.println("Texto:" + update.getMessage().getText());
-			System.out.println("idChat:" + update.getMessage().getChatId());
-			System.out.println("Nome:" + update.getMessage().getFrom().getFirstName());
-			System.out.println("Data:" + sdf.format(msgDate));
-			System.out.println("------------------------------");
-		 */
+		/*//Dados do bot (import/java.util.Date e /java.text.SimpleDateFormat
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date msgDate = new Date(update.getMessage().getDate().longValue()*1000); //to milliseconds
+		System.out.println("------------DADOS-------------");
+		System.out.println("Texto:" + update.getMessage().getText());
+		System.out.println("idChat:" + update.getMessage().getChatId());
+		System.out.println("Nome:" + update.getMessage().getFrom().getFirstName());
+		System.out.println("Data:" + sdf.format(msgDate));
+		System.out.println("------------------------------");
+		*/
 		
-		String command = update.getMessage().getText();
+		String comando = update.getMessage().getText();
+		
+		String mensagemResp = resposta(comando);
 
-		sendMessage(update.getMessage().getChatId().toString(),command);
+		SendMessage resposta = new SendMessage();
+		resposta.setChatId(update.getMessage().getChatId());//ID Chat
+		resposta.setText(mensagemResp);
+		
+		try {
+			execute(resposta);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -38,42 +60,94 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	}
 	
 	
-	private String generateMessage(String command) {
-		String message;
-
-		if (command.equals("/start")) {
-			message = "Oi, me chamo UfvRuBot e sou um Bot dos Refeitórios Universitários da UFV! \uD83E\uDD16 \n\n"
-					+ "Estou aqui para te dar suporte com alguns dos nossos principais serviços \n\n"
-					+ "Por favor, digite um comando presente na aba 'Menu' para que eu possa te ajudar.\n";
-
-		} else if (command.equals("/cardapio")) {
-			message = "Esta operação ainda não está disponível";
-
-		} else if (command.equals("/alterarpref")) {
-			message = "Esta operação ainda não está disponível";
-
-		} else if (command.equals("/desligar")) {
-			message = "Esta operação ainda não está disponível";
-
+	private String resposta(String comando) {
+		String mensagemResp;
+		
+		if (isAlterPref) {
+			mensagemResp = respostaAltPrefOp(comando);
+			
+		} else if (isDesligar) {
+			mensagemResp = respostaDesligar(comando);
+			
 		} else {
-			message = "Ação inválida! Por favor digite um comando presente na aba 'Menu' ao lado de seu chat";
+			mensagemResp = respostaComando(comando);
 		}
-
-		return message;
+		
+		return mensagemResp;
 	}
 	
-	private void sendMessage(String idChat, String command) {
-		String message = generateMessage(command);
+	private String respostaComando(String comando) {
+		String mensagemResp;
 
-		SendMessage response = new SendMessage();
-		response.setChatId(idChat);
-		response.setText(message);
+		if (comando.equals("/start")) {
+			mensagemResp = fr.getStart();
 
-		try {
-			execute(response);
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
+		} else if (comando.equals("/cardapio")) {
+			mensagemResp = fr.getCardapio();
+
+		} else if (comando.equals("/alterarpref")) {
+			isAlterPref = true;
+			mensagemResp = fr.getAlterarPref();
+
+		} else if (comando.equals("/desligar")) {
+			isDesligar = true;
+			mensagemResp = fr.getDesligar();
+
+		} else {
+			mensagemResp = fr.getErroComando();
 		}
+
+		return mensagemResp;
+	}
+	
+	private String respostaAltPrefOp(String comando) {
+		String mensagemResp;
+		
+		if (comando.equals("1")) {
+			isAlterPref = false;
+			mensagemResp = fr.getNaoImplementado();
+			
+		} else if(comando.equals("2")) {
+			isAlterPref = false;
+			mensagemResp = fr.getNaoImplementado();
+			
+		} else if(comando.equals("3")) {
+			isAlterPref = false;
+			mensagemResp = fr.getNaoImplementado();
+			
+		} else if(comando.equals("4")) {
+			isAlterPref = false;
+			mensagemResp = fr.getStart();
+			
+		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){
+			mensagemResp = fr.getErroAcesso();
+			
+		} else {
+			mensagemResp = fr.getErroOp();
+		}
+		
+		return mensagemResp;	
+	}
+	
+	private String respostaDesligar(String comando) {
+		String mensagemResp;
+		
+		if (comando.equals("1")) {
+			isDesligar = false;
+			mensagemResp = fr.getDesligarOp1();
+			
+		} else if (comando.equals("2")) {
+			isDesligar = false;
+			mensagemResp = fr.getOpCancelada();
+			
+		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){
+			mensagemResp = fr.getErroAcesso();
+			
+		} else {
+			mensagemResp = fr.getErroOp();
+		}
+		
+		return mensagemResp;
 	}
 	
 }
