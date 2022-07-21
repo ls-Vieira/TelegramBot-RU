@@ -22,24 +22,18 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	private Date dataAtual = new Date();
 	private List<Cardapio> cardapios = new ArrayList<>();
 	
+	//-------------------------------ATENCAO----------------------------------------------------
 	public UfvRuBot() throws ParseException {
 		super();
-		geraCardapio("C:\\ws-eclipse-BOT\\telegram-bot-ru\\src\\main\\resources\\cardapio.csv");
+		//geraCardapio() espera o caminho do arquivo do cardapio.csv
+		//Eem src/main/resources tem um exemplo que condiz com o cardapio da semana do dia 17/07/2022 a 23/07/2022
+		//MUDE O CAMINHO CASO NECESSARIO
+		String inPath = "C:\\ws-eclipse-BOT\\telegram-bot-ru\\src\\main\\resources\\cardapio.csv";
+		geraCardapio(inPath);
 	}
 
 	@Override
 	public void onUpdateReceived(Update update) {
-		
-		/*//Dados do bot (import/java.util.Date e /java.text.SimpleDateFormat
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date msgDate = new Date(update.getMessage().getDate().longValue()*1000); //to milliseconds
-		System.out.println("------------DADOS-------------");
-		System.out.println("Texto:" + update.getMessage().getText());
-		System.out.println("idChat:" + update.getMessage().getChatId());
-		System.out.println("Nome:" + update.getMessage().getFrom().getFirstName());
-		System.out.println("Data:" + sdf.format(msgDate));
-		System.out.println("------------------------------");
-		*/
 		
 		String comando = update.getMessage().getText();
 		
@@ -64,13 +58,15 @@ public class UfvRuBot extends TelegramLongPollingBot {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
+	
+	//-------------------------------ATENCAO----------------------------------------------------
+	@Override //Coloque o UserName do bot (dadosBot.txt no arquivo .zip)
 	public String getBotUsername() {
 		return null;
 	}
 
-	@Override
+	//-------------------------------ATENCAO----------------------------------------------------
+	@Override //Coloque o Token do Bot (dadosBot.txt no arquivo .zip)
 	public String getBotToken() {
 		return null;
 	}
