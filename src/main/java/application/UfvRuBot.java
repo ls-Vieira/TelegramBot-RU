@@ -1,22 +1,30 @@
 package application;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import entities.Frases;
+import entities.Cardapio;
 
 public class UfvRuBot extends TelegramLongPollingBot {
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	private Frases fr = new Frases();
-	private boolean isAlterPref;
-	private boolean isDesligar;
+	private Date dataAtual = new Date();
+	private List<Cardapio> cardapios = new ArrayList<>();
 	
-	public UfvRuBot() {
+	public UfvRuBot() throws ParseException {
 		super();
-		isAlterPref = false;
-		isDesligar = false;
+		geraCardapio("C:\\ws-eclipse-BOT\\telegram-bot-ru\\src\\main\\resources\\cardapio.csv");
 	}
 
 	@Override
@@ -35,9 +43,18 @@ public class UfvRuBot extends TelegramLongPollingBot {
 		
 		String comando = update.getMessage().getText();
 		
-		String mensagemResp = resposta(comando);
+		String mensagemResp = UI.resposta(comando);
+		
+		if(comando.equals("/cardapio")) {
+			int posCardapioAtual = procuraCardapio(dataAtual);
+			
+			if(posCardapioAtual != -1) {
+				mensagemResp = cardapios.get(posCardapioAtual).toString();
+			}
+		}
 
 		SendMessage resposta = new SendMessage();
+		
 		resposta.setChatId(update.getMessage().getChatId());//ID Chat
 		resposta.setText(mensagemResp);
 		
@@ -46,7 +63,6 @@ public class UfvRuBot extends TelegramLongPollingBot {
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	@Override
@@ -59,95 +75,63 @@ public class UfvRuBot extends TelegramLongPollingBot {
 		return null;
 	}
 	
-	
-	private String resposta(String comando) {
-		String mensagemResp;
-		
-		if (isAlterPref) {
-			mensagemResp = respostaAltPrefOp(comando);
+	private void geraCardapio(String inPath) throws ParseException {
+		try (BufferedReader br = new BufferedReader(new FileReader(inPath))) {
+
+			String line = br.readLine();
+
+			while (line != null) {
+
+				String[] vect = line.split(",");
+
+				Date data = sdf.parse(vect[0]);
+				Cardapio cardapio = new Cardapio(data);
+				
+				boolean isCafe = false, isAlmoco = false, isJantar = false;
 			
-		} else if (isDesligar) {
-			mensagemResp = respostaDesligar(comando);
+				for(String s : vect) {
+
+					if(s.equals("CAFE")) {
+						isCafe = true;
+					}else if(s.equals("ALMOCO")) {
+						isCafe = false;
+						isAlmoco = true;
+					}else if(s.equals("JANTAR")) {
+						isCafe = false;
+						isAlmoco = false;
+						isJantar = true;
+					}
+					
+					if(isCafe) {
+						cardapio.addCafe(s);
+					}else if(isAlmoco) {
+						cardapio.addAlmoco(s);
+					}else if(isJantar) {
+						cardapio.addJantar(s);
+					}
+				}
 			
-		} else {
-			mensagemResp = respostaComando(comando);
+				cardapios.add(cardapio);
+				
+				line = br.readLine();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
-		return mensagemResp;
-	}
-	
-	private String respostaComando(String comando) {
-		String mensagemResp;
-
-		if (comando.equals("/start")) {
-			mensagemResp = fr.getStart();
-
-		} else if (comando.equals("/cardapio")) {
-			mensagemResp = fr.getCardapio();
-
-		} else if (comando.equals("/alterarpref")) {
-			isAlterPref = true;
-			mensagemResp = fr.getAlterarPref();
-
-		} else if (comando.equals("/desligar")) {
-			isDesligar = true;
-			mensagemResp = fr.getDesligar();
-
-		} else {
-			mensagemResp = fr.getErroComando();
-		}
-
-		return mensagemResp;
-	}
-	
-	private String respostaAltPrefOp(String comando) {
-		String mensagemResp;
 		
-		if (comando.equals("1")) {
-			isAlterPref = false;
-			mensagemResp = fr.getNaoImplementado();
-			
-		} else if(comando.equals("2")) {
-			isAlterPref = false;
-			mensagemResp = fr.getNaoImplementado();
-			
-		} else if(comando.equals("3")) {
-			isAlterPref = false;
-			mensagemResp = fr.getNaoImplementado();
-			
-		} else if(comando.equals("4")) {
-			isAlterPref = false;
-			mensagemResp = fr.getStart();
-			
-		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){
-			mensagemResp = fr.getErroAcesso();
-			
-		} else {
-			mensagemResp = fr.getErroOp();
+		
+	}
+	
+	private int procuraCardapio(Date data) {
+		
+		for(Cardapio c : cardapios) {
+			if(sdf.format(c.getData()).equals(sdf.format(data))) {
+				return cardapios.indexOf(c);
+			}
 		}
 		
-		return mensagemResp;	
+		return -1;
 	}
-	
-	private String respostaDesligar(String comando) {
-		String mensagemResp;
-		
-		if (comando.equals("1")) {
-			isDesligar = false;
-			mensagemResp = fr.getDesligarOp1();
-			
-		} else if (comando.equals("2")) {
-			isDesligar = false;
-			mensagemResp = fr.getOpCancelada();
-			
-		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){
-			mensagemResp = fr.getErroAcesso();
-			
-		} else {
-			mensagemResp = fr.getErroOp();
-		}
-		
-		return mensagemResp;
-	}
-	
 }

@@ -1,10 +1,12 @@
 package application;
+import java.text.ParseException;
+
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		
 		try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
