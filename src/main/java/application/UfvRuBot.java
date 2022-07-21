@@ -19,16 +19,17 @@ import entities.Cardapio;
 public class UfvRuBot extends TelegramLongPollingBot {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
+	//-------------------------------ATENCAO----------------------------------------------------
+	//a variavel inPath espera o caminho do arquivo do cardapio.csv
+	//MUDE O CAMINHO CASO NECESSARIO
+	private static String inPath = "C:\\ws-eclipse-BOT\\telegram-bot-ru\\src\\main\\resources\\cardapio.csv";
+	
 	private Date dataAtual = new Date();
 	private List<Cardapio> cardapios = new ArrayList<>();
+
 	
-	//-------------------------------ATENCAO----------------------------------------------------
 	public UfvRuBot() throws ParseException {
 		super();
-		//geraCardapio() espera o caminho do arquivo do cardapio.csv
-		//Eem src/main/resources tem um exemplo que condiz com o cardapio da semana do dia 17/07/2022 a 23/07/2022
-		//MUDE O CAMINHO CASO NECESSARIO
-		String inPath = "C:\\ws-eclipse-BOT\\telegram-bot-ru\\src\\main\\resources\\cardapio.csv";
 		geraCardapio(inPath);
 	}
 
