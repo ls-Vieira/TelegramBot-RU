@@ -1,30 +1,29 @@
 package application;
 
 import entities.Frases;
+import entities.Usuario;
 
 public class UI {
-	
+		
 	public static Frases fr = new Frases();
-	private static boolean isAlterPref = false;
-	private static boolean isDesligar = false;
 	
-	public static String resposta(String comando) {
+	public static String resposta(String comando, Usuario usuario) {
 		String mensagemResp;
 		
-		if (isAlterPref) {
-			mensagemResp = respostaAltPrefOp(comando);
+		if (usuario.isAlterPref()) {
+			mensagemResp = respostaAltPrefOp(comando,usuario);
 			
-		} else if (isDesligar) {
-			mensagemResp = respostaDesligar(comando);
+		} else if (usuario.isDesligar()) {
+			mensagemResp = respostaDesligar(comando,usuario);
 			
 		} else {
-			mensagemResp = respostaComando(comando);
+			mensagemResp = respostaComando(comando,usuario);
 		}
 		
 		return mensagemResp;
 	}
 	
-	public static String respostaComando(String comando) {
+	public static String respostaComando(String comando, Usuario usuario) {
 		String mensagemResp;
 
 		if (comando.equals("/start")) {
@@ -34,11 +33,11 @@ public class UI {
 			mensagemResp = fr.getErroCardapio();
 	
 		} else if (comando.equals("/alterarpref")) {
-			isAlterPref = true;
+			usuario.setAlterPref(true);
 			mensagemResp = fr.getAlterarPref();
 
 		} else if (comando.equals("/desligar")) {
-			isDesligar = true;
+			usuario.setDesligar(true);
 			mensagemResp = fr.getDesligar();
 
 		} else {
@@ -48,23 +47,23 @@ public class UI {
 		return mensagemResp;
 	}
 		
-	public static String respostaAltPrefOp(String comando) {
+	public static String respostaAltPrefOp(String comando, Usuario usuario) {
 		String mensagemResp;
 		
 		if (comando.equals("1")) {
-			isAlterPref = false;
+			usuario.setAlterPref(false);
 			mensagemResp = fr.getNaoImplementado();
 			
 		} else if(comando.equals("2")) {
-			isAlterPref = false;
+			usuario.setAlterPref(false);
 			mensagemResp = fr.getNaoImplementado();
 			
 		} else if(comando.equals("3")) {
-			isAlterPref = false;
+			usuario.setAlterPref(false);
 			mensagemResp = fr.getNaoImplementado();
 			
 		} else if(comando.equals("4")) {
-			isAlterPref = false;
+			usuario.setAlterPref(false);
 			mensagemResp = fr.getStart();
 			
 		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){
@@ -77,15 +76,15 @@ public class UI {
 		return mensagemResp;	
 	}
 	
-	public static String respostaDesligar(String comando) {
+	public static String respostaDesligar(String comando, Usuario usuario) {
 		String mensagemResp;
 		
 		if (comando.equals("1")) {
-			isDesligar = false;
+			usuario.setDesligar(false);
 			mensagemResp = fr.getDesligarOp1();
 			
 		} else if (comando.equals("2")) {
-			isDesligar = false;
+			usuario.setDesligar(false);
 			mensagemResp = fr.getOpCancelada();
 			
 		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){

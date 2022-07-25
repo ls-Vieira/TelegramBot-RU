@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import entities.Cardapio;
+import entities.Usuario;
 
 public class UfvRuBot extends TelegramLongPollingBot {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -26,7 +27,7 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	
 	private Date dataAtual = new Date();
 	private List<Cardapio> cardapios = new ArrayList<>();
-
+	private List<Usuario> usuarios = new ArrayList<>();
 	
 	public UfvRuBot() throws ParseException {
 		super();
@@ -36,18 +37,27 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	@Override
 	public void onUpdateReceived(Update update) {
 		
+		Long idChat = update.getMessage().getChatId();
+		String nomeUs = update.getMessage().getFrom().getFirstName();
+		
+		//ADICIONANDO E PROCURANDO O USUARIO
+		addUsuario(idChat,nomeUs);
+		int posUsuario = procuraUsuario(idChat,nomeUs);
+		//
+		
 		String comando = update.getMessage().getText();
+		String mensagemResp = UI.resposta(comando, usuarios.get(posUsuario));
 		
-		String mensagemResp = UI.resposta(comando);
-		
-		if(comando.equals("/cardapio")) {
+		//CASO ESPECIAL PROCURANDO CARDAPIO
+		if(comando.equals("/cardapio") && mensagemResp.equals(UI.fr.getErroCardapio())) {
 			int posCardapioAtual = procuraCardapio(dataAtual);
 			
 			if(posCardapioAtual != -1) {
 				mensagemResp = cardapios.get(posCardapioAtual).toString();
 			}
 		}
-
+		//
+	
 		SendMessage resposta = new SendMessage();
 		
 		resposta.setChatId(update.getMessage().getChatId());//ID Chat
@@ -63,13 +73,13 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	//-------------------------------ATENCAO----------------------------------------------------
 	@Override //Coloque o UserName do bot (dadosBot.txt no arquivo .zip)
 	public String getBotUsername() {
-		return null;
+		return "UfvRu_bot";
 	}
 
 	//-------------------------------ATENCAO----------------------------------------------------
 	@Override //Coloque o Token do Bot (dadosBot.txt no arquivo .zip)
 	public String getBotToken() {
-		return null;
+		return "5592836162:AAEBXtnFxgpQGTcEosBPDD_vSoArKfEsZaI";
 	}
 	
 	private void geraCardapio(String inPath) throws ParseException {
@@ -127,6 +137,22 @@ public class UfvRuBot extends TelegramLongPollingBot {
 			if(sdf.format(c.getData()).equals(sdf.format(data))) {
 				return cardapios.indexOf(c);
 			}
+		}
+		
+		return -1;
+	}
+	
+	private void addUsuario(Long id, String nome) {
+		Usuario novoUsuario = new Usuario(id,nome);
+		if(!usuarios.contains(novoUsuario)) {
+			usuarios.add(novoUsuario);
+		}
+	}
+	
+	private int procuraUsuario(Long id, String nome) {
+		Usuario novoUsuario = new Usuario(id,nome);
+		if(usuarios.contains(novoUsuario)) {
+			return usuarios.indexOf(novoUsuario);
 		}
 		
 		return -1;
