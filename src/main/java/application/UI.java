@@ -20,7 +20,15 @@ public class UI {
 			
 		} else if (usuario.isAlterPref()) {
 			
-			if(usuario.isOpVegan()) {
+			if(usuario.isOpSemana()) {
+				
+				if(usuario.getDiaCadastro() == null) {
+					mensagemResp = respostaCadastroDia(comando, usuario);
+				}else {
+					mensagemResp = respostaCadastraRefeicao(comando, usuario);
+				}
+				
+			}else if(usuario.isOpVegan()) {
 				mensagemResp = respostaVegano(comando,usuario);
 			}else {
 				mensagemResp = respostaAltPrefOp(comando,usuario);
@@ -92,14 +100,28 @@ public class UI {
 			usuario.setDiaCadastro(1);
 			
 		} else if(comando.equals("8")) {
-			//voltando
-			usuario.setAlterPref(true);
-			usuario.setOpVegan(true);
-			usuario.setCadastro(false);
-			mensagemResp = fr.getCadastraVegano();
+			//limpa Semana
+			usuario.zeraSemana();
+			mensagemResp = fr.getSemanaLimpada();
+			
+		} else if(comando.equals("9")) {
+			//prosseguindo se é cadastro
+			if(usuario.isAlterPref()) {
+				usuario.setAlterPref(false);
+				mensagemResp = fr.getSemanaAtuzalizada();
+			}else {
+				usuario.setAlterPref(true);
+				usuario.setOpVegan(true);
+				usuario.setCadastro(false);
+				mensagemResp = fr.getCadastraVegano();
+			}
 			
 		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){
-			mensagemResp = fr.getErroAcessoCadastro();
+			if(usuario.isAlterPref()) {
+				mensagemResp = fr.getErroAcesso();
+			}else {
+				mensagemResp = fr.getErroAcessoCadastro();
+			}
 			
 		} else {
 			mensagemResp = fr.getErroOp();
@@ -155,8 +177,8 @@ public class UI {
 		String mensagemResp;
 		
 		if (comando.equals("1")) {
-			usuario.setAlterPref(false);
-			mensagemResp = fr.getNaoImplementado();
+			usuario.setOpSemana(true);
+			mensagemResp = fr.getAtualizaSemana();
 			
 		} else if(comando.equals("2")) {
 			usuario.setAlterPref(false);

@@ -40,10 +40,10 @@ public class UfvRuBot extends TelegramLongPollingBot {
 		Long idChat = update.getMessage().getChatId();
 		String nomeUs = update.getMessage().getFrom().getFirstName();
 		
-		Usuario usuario = new Usuario(idChat,nomeUs);
+		Usuario novoUsuario = new Usuario(idChat,nomeUs);
 
 		// ADICIONANDO E PROCURANDO O USUARIO
-		boolean adicionou = addUsuario(usuario);
+		boolean adicionou = addUsuario(novoUsuario);
 		int posUsuario = procuraUsuario(idChat, nomeUs);
 		//
 
@@ -52,16 +52,21 @@ public class UfvRuBot extends TelegramLongPollingBot {
 		String mensagemResp = UI.resposta(comando, usuarios.get(posUsuario));
 		//
 		
-		if(testaCasosEspeciais(comando,usuario,adicionou,mensagemResp) != null) {
-			mensagemResp = testaCasosEspeciais(comando,usuario,adicionou,mensagemResp);
-		}else if (adicionou) {
-			enviaMensagem(mensagemResp, idChat);
-			mensagemResp = comecaCadastro(usuario);
+		if(testaCasosEspeciais(comando,usuarios.get(posUsuario),adicionou,mensagemResp) != null) {
+			mensagemResp = testaCasosEspeciais(comando,usuarios.get(posUsuario),adicionou,mensagemResp);
 		}
 		
-		
+		if(adicionou) {
+			enviaMensagem(mensagemResp, idChat);
+			mensagemResp = comecaCadastro(usuarios.get(posUsuario));
+		}
 		
 		enviaMensagem(mensagemResp, idChat);
+		
+		//Removendo usuario caso Opcao
+		if(mensagemResp.equals(UI.fr.getDesligarOp1())) {
+			removeUsuario(usuarios.get(posUsuario));
+		}
 	}
 
 	// -------------------------------ATENCAO----------------------------------------------------
@@ -111,12 +116,10 @@ public class UfvRuBot extends TelegramLongPollingBot {
 			}
 		}
 		
-		// CASO ESPECIAL REMOVENDO USUARIO
-		if (mensagemResp.equals(UI.fr.getDesligarOp1())) {
-			removeUsuario(usuario);
-			novaMensagem = UI.fr.getDesligarOp1();
+		// CASO ESPECIAL MOSTRANDO SEMANA
+		if(mensagemResp.equals(UI.fr.getDiaCadastrado()) || mensagemResp.equals(UI.fr.getSemanaLimpada())) {
+			enviaMensagem(usuario.printSemana(),usuario.getId());
 		}
-		
 		
 		return novaMensagem;
 	}

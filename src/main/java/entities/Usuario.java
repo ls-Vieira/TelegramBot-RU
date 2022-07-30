@@ -7,7 +7,7 @@ public class Usuario {
 	private Long id;
 	private String nome;
 	
-	private boolean[][] semana = new boolean[3][7];
+	private boolean[][] semana;
 	private boolean isVegano;
 	
 	//variaveis de chat
@@ -15,6 +15,7 @@ public class Usuario {
 	private boolean isAlterPref = false;
 	private boolean isDesligar = false;
 	private boolean isOpVegan = false;
+	private boolean isOpSemana = false;
 	private Integer diaCadastro = null;
 	
 	public Usuario() {}
@@ -22,6 +23,7 @@ public class Usuario {
 	public Usuario(Long id, String nome) {
 		this.id = id;
 		this.nome = nome;
+		this.semana = new boolean[3][7];
 	}
 
 	public String getNome() {
@@ -68,16 +70,24 @@ public class Usuario {
 		return isOpVegan;
 	}
 	
+	public void setOpVegan(boolean isOpVegan) {
+		this.isOpVegan = isOpVegan;
+	}
+	
+	public boolean isOpSemana() {
+		return isOpSemana;
+	}
+	
+	public void setOpSemana(boolean isOpSemana) {
+		this.isOpSemana = isOpSemana;
+	}
+	
 	public Integer getDiaCadastro() {
 		return diaCadastro;
 	}
 
 	public void setDiaCadastro(Integer dia) {
 		this.diaCadastro = dia;
-	}
-	
-	public void setOpVegan(boolean isOpVegan) {
-		this.isOpVegan = isOpVegan;
 	}
 		
 	public Long getId() {
@@ -88,17 +98,57 @@ public class Usuario {
 		if(li > 3 || col > 7) {
 			System.out.println("ERRO: position");
 		}else {
-			semana[li][col] = mark;
+			this.semana[li][col] = mark;
 		}
 	}
 	
-	public boolean verificaDiaRefeicao(int dia, int refeicao) {
-		if(dia > 7 ) {
-			System.out.println("ERRO: position");
-		}else {
-			return semana[refeicao][dia];
+	public void zeraSemana() {
+		for(int i=0; i<3; i++) {
+			for(int j=0; j<7; j++) {
+				semana[i][j] = false;
+			}
 		}
-		return false;
+	}
+	
+	public String printSemana() {
+		String Semana =
+		  "Sua semana até o momento: \n\n"
+		+ "Segunda: "+confereDia(2)
+		+ "Terca: "+confereDia(3)
+		+ "Quarta: "+confereDia(4)
+		+ "Quinta: "+confereDia(5)
+		+ "Sexta: "+confereDia(6)
+		+ "Sábado: "+confereDia(0)
+		+ "Domingo: "+confereDia(1);
+		
+		return Semana;
+	}
+	
+	private String confereDia(int dia) {
+		if(semana[0][dia] && semana[1][dia] && semana[2][dia]) {
+			return "Café da manhã, Almoço, Jantar\n";
+			
+		} else if(semana[0][dia] && semana[1][dia]) {
+			return "Café da manhã, Almoço\n";
+			
+		} else if(semana[0][dia] && semana[2][dia]) {
+			return "Café da manhã,Jantar\n";
+			
+		} else if(semana[1][dia] && semana[2][dia]) {
+			return "Almoço, Jantar\n";
+			
+		} else if(semana[0][dia]) {
+			return "Café da manhã\n";
+			
+		} else if(semana[1][dia]) {
+			return "Almoço\n";
+			
+		} else if(semana[2][dia]) {
+			return "Jantar\n";
+			
+		}else {
+			return "Sem refeição\n";
+		}
 	}
 	
 	@Override
