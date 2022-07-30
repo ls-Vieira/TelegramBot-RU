@@ -19,16 +19,16 @@ import entities.Usuario;
 
 public class UfvRuBot extends TelegramLongPollingBot {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	
-	//-------------------------------ATENCAO----------------------------------------------------
-	//a variavel inPath espera o caminho do arquivo do cardapio.csv
-	//MUDE O CAMINHO CASO NECESSARIO
+
+	// -------------------------------ATENCAO----------------------------------------------------
+	// a variavel inPath espera o caminho do arquivo do cardapio.csv
+	// MUDE O CAMINHO CASO NECESSARIO
 	private static String inPath = "C:\\ws-eclipse-BOT\\telegram-bot-ru\\src\\main\\resources\\cardapio.csv";
-	
+
 	private Date dataAtual = new Date();
 	private List<Cardapio> cardapios = new ArrayList<>();
 	private List<Usuario> usuarios = new ArrayList<>();
-	
+
 	public UfvRuBot() throws ParseException {
 		super();
 		geraCardapio(inPath);
@@ -36,50 +36,95 @@ public class UfvRuBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(Update update) {
-		
+
 		Long idChat = update.getMessage().getChatId();
 		String nomeUs = update.getMessage().getFrom().getFirstName();
 		
-		//ADICIONANDO E PROCURANDO O USUARIO
-		addUsuario(idChat,nomeUs);
-		int posUsuario = procuraUsuario(idChat,nomeUs);
+		Usuario usuario = new Usuario(idChat,nomeUs);
+
+		// ADICIONANDO E PROCURANDO O USUARIO
+		boolean adicionou = addUsuario(usuario);
+		int posUsuario = procuraUsuario(idChat, nomeUs);
 		//
-		
+
+		// LENDO COMANDO E RESPONDENDO
 		String comando = update.getMessage().getText();
 		String mensagemResp = UI.resposta(comando, usuarios.get(posUsuario));
-		
-		//CASO ESPECIAL PROCURANDO CARDAPIO
-		if(comando.equals("/cardapio") && mensagemResp.equals(UI.fr.getErroCardapio())) {
-			int posCardapioAtual = procuraCardapio(dataAtual);
-			
-			if(posCardapioAtual != -1) {
-				mensagemResp = cardapios.get(posCardapioAtual).toString();
-			}
-		}
 		//
-	
+		
+		if(testaCasosEspeciais(comando,usuario,adicionou,mensagemResp) != null) {
+			mensagemResp = testaCasosEspeciais(comando,usuario,adicionou,mensagemResp);
+		}else if (adicionou) {
+			enviaMensagem(mensagemResp, idChat);
+			mensagemResp = comecaCadastro(usuario);
+		}
+		
+		
+		
+		enviaMensagem(mensagemResp, idChat);
+	}
+
+	// -------------------------------ATENCAO----------------------------------------------------
+	@Override // Coloque o UserName do bot (dadosBot.txt no arquivo .zip)
+	public String getBotUsername() {
+		return null;
+	}
+
+	// -------------------------------ATENCAO----------------------------------------------------
+	@Override // Coloque o Token do Bot (dadosBot.txt no arquivo .zip)
+	public String getBotToken() {
+		return null;
+	}
+
+	private void enviaMensagem(String mensagem, Long idChat) {
 		SendMessage resposta = new SendMessage();
-		
-		resposta.setChatId(update.getMessage().getChatId());//ID Chat
-		resposta.setText(mensagemResp);
-		
+
+		resposta.setChatId(idChat);// ID Chat
+		resposta.setText(mensagem);
+
 		try {
 			execute(resposta);
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	//-------------------------------ATENCAO----------------------------------------------------
-	@Override //Coloque o UserName do bot (dadosBot.txt no arquivo .zip)
-	public String getBotUsername() {
-		return null;
-	}
 
-	//-------------------------------ATENCAO----------------------------------------------------
-	@Override //Coloque o Token do Bot (dadosBot.txt no arquivo .zip)
-	public String getBotToken() {
-		return null;
+	private String testaCasosEspeciais(String comando, Usuario usuario, boolean adicionou, String mensagemResp) {
+		String novaMensagem = null;
+		
+		// CASO ESPECIAL USUARIO CADASTRADO MAS LIMPOU O CHAT
+		if (!adicionou && mensagemResp.equals(UI.fr.getStartCadastro())) {
+			novaMensagem = UI.fr.getStart();
+		}
+		
+		// CASO ESPECIAL USARIO "PULOU" O CADASTRO
+		if (adicionou && !mensagemResp.equals(UI.fr.getStartCadastro())) {
+			novaMensagem = UI.fr.getStartCadastro();
+		}
+		
+		// CASO ESPECIAL RESPONDENDO CARDAPIO
+		if (comando.equals("/cardapio") && mensagemResp.equals(UI.fr.getErroCardapio())) {
+			int posCardapioAtual = procuraCardapio(dataAtual);
+
+			if (posCardapioAtual != -1) {
+				novaMensagem = cardapios.get(posCardapioAtual).toString();
+			}
+		}
+		
+		// CASO ESPECIAL REMOVENDO USUARIO
+		if (mensagemResp.equals(UI.fr.getDesligarOp1())) {
+			removeUsuario(usuario);
+			novaMensagem = UI.fr.getDesligarOp1();
+		}
+		
+		
+		return novaMensagem;
+	}
+	
+	private String comecaCadastro(Usuario usuario) {
+		usuario.setCadastro(true);
+		
+		return UI.fr.getCadastraSemana();
 	}
 	
 	private void geraCardapio(String inPath) throws ParseException {
@@ -93,68 +138,73 @@ public class UfvRuBot extends TelegramLongPollingBot {
 
 				Date data = sdf.parse(vect[0]);
 				Cardapio cardapio = new Cardapio(data);
-				
-				boolean isCafe = false, isAlmoco = false, isJantar = false;
-			
-				for(String s : vect) {
 
-					if(s.equals("CAFE")) {
+				boolean isCafe = false, isAlmoco = false, isJantar = false;
+
+				for (String s : vect) {
+
+					if (s.equals("CAFE")) {
 						isCafe = true;
-					}else if(s.equals("ALMOCO")) {
+					} else if (s.equals("ALMOCO")) {
 						isCafe = false;
 						isAlmoco = true;
-					}else if(s.equals("JANTAR")) {
+					} else if (s.equals("JANTAR")) {
 						isCafe = false;
 						isAlmoco = false;
 						isJantar = true;
 					}
-					
-					if(isCafe) {
+
+					if (isCafe) {
 						cardapio.addCafe(s);
-					}else if(isAlmoco) {
+					} else if (isAlmoco) {
 						cardapio.addAlmoco(s);
-					}else if(isJantar) {
+					} else if (isJantar) {
 						cardapio.addJantar(s);
 					}
 				}
-			
+
 				cardapios.add(cardapio);
-				
+
 				line = br.readLine();
 			}
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
-	
+
 	private int procuraCardapio(Date data) {
-		
-		for(Cardapio c : cardapios) {
-			if(sdf.format(c.getData()).equals(sdf.format(data))) {
+
+		for (Cardapio c : cardapios) {
+			if (sdf.format(c.getData()).equals(sdf.format(data))) {
 				return cardapios.indexOf(c);
 			}
 		}
-		
+
 		return -1;
 	}
-	
-	private void addUsuario(Long id, String nome) {
-		Usuario novoUsuario = new Usuario(id,nome);
-		if(!usuarios.contains(novoUsuario)) {
-			usuarios.add(novoUsuario);
+
+	private boolean addUsuario(Usuario usuario) {
+		if (!usuarios.contains(usuario)) {
+			usuarios.add(usuario);
+			return true;
 		}
+
+		return false;
+	}
+
+	private boolean removeUsuario(Usuario usuario) {
+		return usuarios.remove(usuario);
 	}
 	
 	private int procuraUsuario(Long id, String nome) {
-		Usuario novoUsuario = new Usuario(id,nome);
-		if(usuarios.contains(novoUsuario)) {
-			return usuarios.indexOf(novoUsuario);
+		Usuario usuario = new Usuario(id, nome);
+		if (usuarios.contains(usuario)) {
+			return usuarios.indexOf(usuario);
 		}
-		
+
 		return -1;
 	}
+
 }
