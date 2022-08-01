@@ -11,7 +11,7 @@ public class Usuario {
 	private boolean isVegano;
 	
 	//variaveis de chat
-	private boolean isCadastro =  false;
+	private boolean isCadastro = false;
 	private boolean isAlterPref = false;
 	private boolean isDesligar = false;
 	private boolean isOpVegan = false;

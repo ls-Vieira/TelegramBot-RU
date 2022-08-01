@@ -23,12 +23,12 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	// -------------------------------ATENCAO----------------------------------------------------
 	// a variavel inPath espera o caminho do arquivo do cardapio.csv
 	// MUDE O CAMINHO CASO NECESSARIO
-	private static String inPath = "C:\\ws-eclipse-BOT\\telegram-bot-ru\\src\\main\\resources\\cardapio.csv";
+	private static String inPath = "cardapio/cardapio.csv";
 
 	private Date dataAtual = new Date();
-	private List<Cardapio> cardapios = new ArrayList<>();
-	private List<Usuario> usuarios = new ArrayList<>();
-
+	private static final List<Cardapio> cardapios = new ArrayList<>();
+	private static final List<Usuario> usuarios = new ArrayList<>();
+	
 	public UfvRuBot() throws ParseException {
 		super();
 		geraCardapio(inPath);
@@ -36,7 +36,7 @@ public class UfvRuBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(Update update) {
-
+		
 		Long idChat = update.getMessage().getChatId();
 		String nomeUs = update.getMessage().getFrom().getFirstName();
 		
@@ -72,13 +72,13 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	// -------------------------------ATENCAO----------------------------------------------------
 	@Override // Coloque o UserName do bot (dadosBot.txt no arquivo .zip)
 	public String getBotUsername() {
-		return null;
+		return "UfvRu_bot";
 	}
 
 	// -------------------------------ATENCAO----------------------------------------------------
 	@Override // Coloque o Token do Bot (dadosBot.txt no arquivo .zip)
 	public String getBotToken() {
-		return null;
+		return "5592836162:AAGcVFWo_glJEYklvMN81HXZhbDH3EwABno";
 	}
 
 	private void enviaMensagem(String mensagem, Long idChat) {
