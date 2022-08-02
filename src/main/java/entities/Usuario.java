@@ -12,6 +12,7 @@ public class Usuario {
 	
 	//variaveis de chat
 	private boolean isCadastro = false;
+	private boolean isTerminouCadastro = false;
 	private boolean isAlterPref = false;
 	private boolean isDesligar = false;
 	private boolean isOpVegan = false;
@@ -48,6 +49,14 @@ public class Usuario {
 	
 	public void setCadastro(boolean isCadastro) {
 		this.isCadastro = isCadastro;
+	}
+	
+	public boolean isTerminouCadastro() {
+		return isTerminouCadastro;
+	}
+	
+	public void setTerminouCadastro(boolean isTerminouCadastro) {
+		this.isTerminouCadastro = isTerminouCadastro;
 	}
 	
 	public boolean isAlterPref() {
@@ -112,13 +121,13 @@ public class Usuario {
 	
 	public String printSemana() {
 		String Semana =
-		  "Sua semana até o momento: \n\n"
+		  "Sua semana atÃ© o momento: \n\n"
 		+ "Segunda: "+confereDia(2)
 		+ "Terca: "+confereDia(3)
 		+ "Quarta: "+confereDia(4)
 		+ "Quinta: "+confereDia(5)
 		+ "Sexta: "+confereDia(6)
-		+ "Sábado: "+confereDia(0)
+		+ "SÃ¡bado: "+confereDia(0)
 		+ "Domingo: "+confereDia(1);
 		
 		return Semana;
@@ -126,28 +135,28 @@ public class Usuario {
 	
 	private String confereDia(int dia) {
 		if(semana[0][dia] && semana[1][dia] && semana[2][dia]) {
-			return "Café da manhã, Almoço, Jantar\n";
+			return "CafÃ© da manhÃ£, AlmoÃ§o, Jantar\n";
 			
 		} else if(semana[0][dia] && semana[1][dia]) {
-			return "Café da manhã, Almoço\n";
+			return "CafÃ© da manhÃ£, AlmoÃ§o\n";
 			
 		} else if(semana[0][dia] && semana[2][dia]) {
-			return "Café da manhã,Jantar\n";
+			return "CafÃ© da manhÃ£,Jantar\n";
 			
 		} else if(semana[1][dia] && semana[2][dia]) {
-			return "Almoço, Jantar\n";
+			return "AlmoÃ§o, Jantar\n";
 			
 		} else if(semana[0][dia]) {
-			return "Café da manhã\n";
+			return "CafÃ© da manhÃ£\n";
 			
 		} else if(semana[1][dia]) {
-			return "Almoço\n";
+			return "AlmoÃ§o\n";
 			
 		} else if(semana[2][dia]) {
 			return "Jantar\n";
 			
 		}else {
-			return "Sem refeição\n";
+			return "Sem refeiÃ§Ã£o\n";
 		}
 	}
 	

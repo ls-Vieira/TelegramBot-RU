@@ -39,16 +39,16 @@ public class Cardapio {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\uD83C\uDF74 Card·pio do dia ");
+		sb.append("\uD83C\uDF74 Card√°pio do dia ");
 		sb.append(sdf.format(data) + " \uD83C\uDF74 \n\n");
-		sb.append("CafÈ da manh„\n");
+		sb.append("Caf√© da manh√£\n");
 		for(String s : cafe) {
 			if(!s.equals("CAFE")){
 				sb.append(s + "\n");
 			}
 		}
 		sb.append("\n");
-		sb.append("AlmoÁo\n");
+		sb.append("Almo√ßo\n");
 		for(String s : almoco) {
 			if(!s.equals("ALMOCO")){
 				sb.append(s + "\n");
