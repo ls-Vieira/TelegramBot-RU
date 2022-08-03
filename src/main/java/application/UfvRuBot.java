@@ -72,13 +72,13 @@ public class UfvRuBot extends TelegramLongPollingBot {
 	// -------------------------------ATENCAO----------------------------------------------------
 	@Override // Coloque o UserName do bot (dadosBot.txt no arquivo .zip)
 	public String getBotUsername() {
-		return null;
+		return "UfvRu_bot";
 	}
 
 	// -------------------------------ATENCAO----------------------------------------------------
 	@Override // Coloque o Token do Bot (dadosBot.txt no arquivo .zip)
 	public String getBotToken() {
-		return null;
+		return "5592836162:AAGcVFWo_glJEYklvMN81HXZhbDH3EwABno";
 	}
 
 	private void enviaMensagem(String mensagem, Long idChat) {
