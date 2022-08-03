@@ -31,7 +31,7 @@ public class Frases {
 							   + "4.Marcar Todos\n"
 							   + "5.Não Marcar\n";
 	
-	private String diaCadastrado = "\u2705 Refeicao e Dia Cadastrado \u2705 \n\n"
+	private String diaCadastrado = "\u2705 Refeição e Dia Cadastrado \u2705 \n\n"
 								 + "Escolha outra opção:\n"
 								 + "1.Segunda\n"
 								 + "2.Terca\n"
@@ -74,6 +74,11 @@ public class Frases {
 								  + "1.Sim\n"
 								  + "2.Não";
 	
+	private String cadastroFinalizado = "Seu cadastro foi finalizado com sucesso e suas preferências foram salvas!\n"
+									  + "Procure na aba 'Menu' ao lado do chat as opções que temos disponíveis para você!\n\n"
+									  + "Aproveite!! \uD83D\uDE00";
+	
+	
 	private String alterarPref = "Alterar suas preferências:\n\n" + "Escolha uma das opções abaixo para continuarmos\n"
 							   + "1.Alterar Sua Semana \uD83D\uDCC5 \n" + "2.Alterar Comida Preferida \uD83C\uDF7D\uFE0F \n"
 							   + "3.Ativar Veganismo \uD83E\uDD66 \n" + "4.Voltar \uD83D\uDD19";
@@ -92,17 +97,19 @@ public class Frases {
 	
 	private String opCancelada = "\u2705 Operação cancelada! \u2705";
 
-	private String erroComando = "\u26D4 A��o inv�lida! Por favor digite um comando presente na aba 'Menu' ao lado de seu chat \u26D4";
+	private String erroComando = "\u26D4 Ação inválida! Por favor digite um comando presente na aba 'Menu' ao lado de seu chat \u26D4";
 
-	private String erroOp = "\u26D4 A��o inv�lida! Por favor informe o n�mero da Op��o que deseja! \u26D4";
+	private String erroOp = "\u26D4 Ação inválida! Por favor informe o número da Opção que deseja! \u26D4";
 
-	private String erroAcesso = "\u26D4 A��o inv�lida! Por favor termine a opera��o antes de tentar acessar outra! \u26D4";
+	private String erroAcesso = "\u26D4 Ação inválida! Por favor termine a operação antes de tentar acessar outra! \u26D4";
 
-	private String erroAcessoCadastro = "\u26D4 A��o inv�lida! Por favor termine o cadastro antes de tentar acessar outra fun��o! \u26D4";
+	private String erroAcessoCadastro = "\u26D4 Ação inválida! Por favor termine o cadastro antes de tentar acessar outra função! \u26D4";
 	
-	private String erroCardapio = "O Card�pio do dia ainda n�o est� dispon�vel!";
+	private String erroCardapio = "O Cardápio do dia ainda não está disponível!";
 	
-	private String naoImplementado = "A��o ainda n�o implementada!";
+	private String naoImplementado = "Ação ainda não implementada!";
+	
+	private String menu = "Escolha uma opção na aba 'Menu' ao lado do chat!";
 
 	public Frases() {
 		super();
@@ -127,6 +134,11 @@ public class Frases {
 	public String getCadastraDia() {
 		return cadastraDia;
 	}
+	
+	public String getCadastroFinalizado() {
+		return cadastroFinalizado;
+	}
+	
 	
 	public String getAlterarPref() {
 		return alterarPref;
@@ -190,5 +202,9 @@ public class Frases {
 	
 	public String getSemanaLimpada() {
 		return semanaLimpada;
+	}
+	
+	public String getMenu() {
+		return menu;
 	}
 }

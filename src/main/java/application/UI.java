@@ -108,11 +108,13 @@ public class UI {
 			//prosseguindo se é cadastro
 			if(usuario.isAlterPref()) {
 				usuario.setAlterPref(false);
+				usuario.setOpSemana(false);
 				mensagemResp = fr.getSemanaAtuzalizada();
 			}else {
 				usuario.setAlterPref(true);
 				usuario.setOpVegan(true);
 				usuario.setCadastro(false);
+				usuario.setTerminouCadastro(true);
 				mensagemResp = fr.getCadastraVegano();
 			}
 			
@@ -190,7 +192,7 @@ public class UI {
 			
 		} else if(comando.equals("4")) {
 			usuario.setAlterPref(false);
-			mensagemResp = fr.getStart();
+			mensagemResp = fr.getMenu();
 			
 		} else if(comando.equals("/start") || comando.equals("/cardapio") || comando.equals("/alterarpref") || comando.equals("/desligar")){
 			mensagemResp = fr.getErroAcesso();
@@ -265,6 +267,12 @@ public class UI {
 		} else {
 			mensagemResp = fr.getErroOp();
 		}
+		
+		if(usuario.isTerminouCadastro()) {
+			usuario.setTerminouCadastro(false);
+			mensagemResp = fr.getCadastroFinalizado();
+		}
+		
 		
 		return mensagemResp;
 	}
